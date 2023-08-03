@@ -18,12 +18,10 @@ export default function Read(props: ReadProps) {
         sx={{
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
         }}
       >
+        <h2>Read</h2>
         <Typography variant="body1" gutterBottom>
-          <h2>Read</h2>
           parameter: {params.id}
         </Typography>
       </Box>
