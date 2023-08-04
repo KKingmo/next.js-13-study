@@ -1,4 +1,3 @@
-import * as React from "react";
 import Link from "next/link";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -18,6 +17,9 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import SupportIcon from "@mui/icons-material/Support";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ThemeRegistry from "@/components/ThemeRegistry/ThemeRegistry";
+import { TransitionProvider } from "@/context/TransitionContext";
+import TransitionComponent from "@/components/Transition";
+import { ReactNode } from "react";
 
 export const metadata = {
   title: "Next.js App Router + Material UI v5",
@@ -31,8 +33,8 @@ const LINKS = [
   { text: "HTML", href: "/read/1", icon: ChecklistIcon },
   { text: "CSS", href: "/read/2", icon: ChecklistIcon },
   { text: "Create", href: "/create", icon: ChecklistIcon },
-  { text: "Update", href: "/create", icon: ChecklistIcon },
-  { text: "Delete", href: "/create", icon: ChecklistIcon },
+  { text: "Update", href: "/update", icon: ChecklistIcon },
+  { text: "Delete", href: "/delete", icon: ChecklistIcon },
 ];
 
 const PLACEHOLDER_LINKS = [
@@ -41,11 +43,7 @@ const PLACEHOLDER_LINKS = [
   { text: "로그아웉", icon: LogoutIcon },
 ];
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function Layout({ children }: { children: ReactNode }) {
   return (
     <html>
       <body>
@@ -102,18 +100,23 @@ export default function RootLayout({
               ))}
             </List>
           </Drawer>
-          <Box
-            component="main"
-            sx={{
-              flexGrow: 1,
-              bgcolor: "background.default",
-              ml: `${DRAWER_WIDTH}px`,
-              mt: ["48px", "56px", "64px"],
-              p: 3,
-            }}
-          >
-            {children}
-          </Box>
+
+          <TransitionProvider>
+            <TransitionComponent>
+              <Box
+                component="main"
+                sx={{
+                  flexGrow: 1,
+                  bgcolor: "background.default",
+                  ml: `${DRAWER_WIDTH}px`,
+                  mt: ["48px", "56px", "64px"],
+                  p: 3,
+                }}
+              >
+                {children}
+              </Box>
+            </TransitionComponent>
+          </TransitionProvider>
         </ThemeRegistry>
       </body>
     </html>
