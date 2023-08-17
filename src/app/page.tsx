@@ -18,8 +18,8 @@ export default function Home() {
     >
       <Box>
         <Alert severity="info" sx={{ mt: 2, mb: 5 }}>
-          <AlertTitle>반갑습니다 👋</AlertTitle>
-          Next.js App Router와 Material UI v5붙였습니다.
+          <AlertTitle>Next 13 학습노트</AlertTitle>
+          강의 문서보고 배운거 여따가 써먹으면서 기록해놓습니다.
         </Alert>
 
         <Grid container rowSpacing={3} columnSpacing={3}>
@@ -37,30 +37,6 @@ export default function Home() {
           </Grid>
         </Grid>
       </Box>
-
-      <Drawer
-        sx={{
-          width: 320,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: 320,
-            boxSizing: "border-box",
-            top: ["48px", "56px", "64px"],
-            height: "auto",
-            bottom: 0,
-          },
-        }}
-        variant="permanent"
-        anchor="right"
-      >
-        <List sx={{ px: 2 }}>
-          <ListItem disablePadding>
-            <Typography variant="overline" sx={{ fontWeight: 500 }}>
-              Next 13 버전 파먹기
-            </Typography>
-          </ListItem>
-        </List>
-      </Drawer>
     </Box>
   );
 }

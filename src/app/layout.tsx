@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -12,38 +14,43 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import HomeIcon from "@mui/icons-material/Home";
-import ChecklistIcon from "@mui/icons-material/Checklist";
-import SettingsIcon from "@mui/icons-material/Settings";
-import SupportIcon from "@mui/icons-material/Support";
-import LogoutIcon from "@mui/icons-material/Logout";
+import FolderIcon from "@mui/icons-material/Folder";
+import ArticleIcon from "@mui/icons-material/Article";
 import ThemeRegistry from "@/components/ThemeRegistry/ThemeRegistry";
 import { TransitionProvider } from "@/context/TransitionContext";
 import TransitionComponent from "@/components/Transition";
-import { ReactNode } from "react";
-
-export const metadata = {
-  title: "Next.js App Router + Material UI v5",
-  description: "Next.js App Router + Material UI v5",
-};
+import { Fragment, ReactNode, useState } from "react";
+import { Collapse } from "@mui/material";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
 const DRAWER_WIDTH = 240;
 
 const LINKS = [
   { text: "Home", href: "/", icon: HomeIcon },
-  { text: "HTML", href: "/read/1", icon: ChecklistIcon },
-  { text: "CSS", href: "/read/2", icon: ChecklistIcon },
-  { text: "Create", href: "/create", icon: ChecklistIcon },
-  { text: "Update", href: "/update", icon: ChecklistIcon },
-  { text: "Delete", href: "/delete", icon: ChecklistIcon },
-];
-
-const PLACEHOLDER_LINKS = [
-  { text: "쎄팅", icon: SettingsIcon },
-  { text: "써포트", icon: SupportIcon },
-  { text: "로그아웉", icon: LogoutIcon },
+  {
+    text: "생활코딩 강의",
+    href: "/",
+    icon: FolderIcon,
+    children: [
+      { text: "HTML", href: "/read/1", icon: ArticleIcon },
+      { text: "CSS", href: "/read/2", icon: ArticleIcon },
+      { text: "Create", href: "/create", icon: ArticleIcon },
+      { text: "Update", href: "/update", icon: ArticleIcon },
+      { text: "Delete", href: "/delete", icon: ArticleIcon },
+    ],
+  },
+  { text: "Next 13 Docs", href: "/", icon: FolderIcon },
 ];
 
 export default function Layout({ children }: { children: ReactNode }) {
+  const [open, setOpen] = useState<any>({});
+
+  const handleClickMenu = (key: string) => {
+    setOpen((prev: any) => {
+      return { ...prev, [key]: prev[key] ? !prev[key] : true };
+    });
+  };
+
   return (
     <html>
       <body>
@@ -54,7 +61,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 sx={{ color: "#444", mr: 2, transform: "translateY(-2px)" }}
               />
               <Typography variant="h6" noWrap component="div" color="black">
-                ㅎㅇ
+                Next 13 노트
               </Typography>
             </Toolbar>
           </AppBar>
@@ -75,48 +82,67 @@ export default function Layout({ children }: { children: ReactNode }) {
           >
             <Divider />
             <List>
-              {LINKS.map(({ text, href, icon: Icon }) => (
-                <ListItem key={href} disablePadding>
-                  <ListItemButton component={Link} href={href}>
-                    <ListItemIcon>
-                      <Icon />
-                    </ListItemIcon>
-                    <ListItemText primary={text} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-            <Divider sx={{ mt: "auto" }} />
-            <List>
-              {PLACEHOLDER_LINKS.map(({ text, icon: Icon }) => (
-                <ListItem key={text} disablePadding>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      <Icon />
-                    </ListItemIcon>
-                    <ListItemText primary={text} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
+              {LINKS.map(({ text, href, icon: Icon, children }) => {
+                const ukey = `${text}${href}`;
+                return children ? (
+                  <Fragment key={ukey}>
+                    <ListItemButton onClick={() => handleClickMenu(ukey)}>
+                      <ListItemIcon>
+                        <Icon />
+                      </ListItemIcon>
+                      <ListItemText primary={text} />
+                      {open[ukey] ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={open[ukey]} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        {children?.map(
+                          ({ text: cText, href: cHref, icon: CIcon }) => (
+                            <ListItemButton
+                              component={Link}
+                              href={cHref}
+                              sx={{ pl: 4 }}
+                              key={cHref}
+                            >
+                              <ListItemIcon>
+                                <CIcon />
+                              </ListItemIcon>
+                              <ListItemText primary={cText} />
+                            </ListItemButton>
+                          )
+                        )}
+                      </List>
+                    </Collapse>
+                  </Fragment>
+                ) : (
+                  <ListItem key={ukey} disablePadding>
+                    <ListItemButton component={Link} href={href}>
+                      <ListItemIcon>
+                        <Icon />
+                      </ListItemIcon>
+                      <ListItemText primary={text} />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
             </List>
           </Drawer>
 
-          <TransitionProvider>
-            <TransitionComponent>
-              <Box
-                component="main"
-                sx={{
-                  flexGrow: 1,
-                  bgcolor: "background.default",
-                  ml: `${DRAWER_WIDTH}px`,
-                  mt: ["48px", "56px", "64px"],
-                  p: 3,
-                }}
-              >
-                {children}
-              </Box>
-            </TransitionComponent>
-          </TransitionProvider>
+          <Box
+            component="main"
+            sx={{
+              flexGrow: 1,
+              bgcolor: "background.default",
+              ml: `${DRAWER_WIDTH}px`,
+              mt: ["48px", "56px", "64px"],
+              p: 3,
+            }}
+          >
+            <TransitionProvider>
+              <div className="content-container">
+                <TransitionComponent>{children}</TransitionComponent>
+              </div>
+            </TransitionProvider>
+          </Box>
         </ThemeRegistry>
       </body>
     </html>
