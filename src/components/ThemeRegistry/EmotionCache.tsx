@@ -10,6 +10,13 @@ import type {
 import * as React from "react";
 import createCache from "@emotion/cache";
 
+/**
+ * `NextAppDirEmotionCacheProvider` 컴포넌트의 프로퍼티 타입.
+ *
+ * `options`: Emotion 캐시를 생성하는 데 필요한 옵션들.
+ * `CacheProvider`: Emotion 캐시 Provider 컴포넌트. 제공되지 않으면 기본값으로 사용됨.
+ * `children`: React 자식 컴포넌트.
+ */
 export type NextAppDirEmotionCacheProviderProps = {
   options: Omit<OptionsOfCreateCache, "insertionPoint">;
   CacheProvider?: (props: {
@@ -19,11 +26,31 @@ export type NextAppDirEmotionCacheProviderProps = {
   children: ReactNode;
 };
 
+/**
+ * Next 앱 디렉터리의 Emotion 캐시 Provider.
+ *
+ * 이 컴포넌트는 Emotion 스타일을 서버 사이드에서 삽입된 HTML에 적절히 처리하기 위한 목적으로 사용됩니다.
+ * SSR, SSG 사용시 유용.
+ *
+ * @example
+ * const MyApp = ({ Component, pageProps }) => {
+ *   return (
+ *     <NextAppDirEmotionCacheProvider options={myOptions}>
+ *       <Component {...pageProps} />
+ *     </NextAppDirEmotionCacheProvider>
+ *   );
+ * }
+ *
+ * @param {NextAppDirEmotionCacheProviderProps} props - Emotion 캐시 Provider의 프로퍼티.
+ * @returns {JSX.Element} - Emotion 스타일을 처리하는 컴포넌트.
+ */
+
 export default function NextAppDirEmotionCacheProvider(
   props: NextAppDirEmotionCacheProviderProps
 ) {
   const { options, CacheProvider = DefaultCacheProvider, children } = props;
 
+  // Emotion 캐시 및 flush 메서드 초기화
   const [registry] = useState(() => {
     const cache = createCache(options);
     cache.compat = true;
@@ -47,6 +74,7 @@ export default function NextAppDirEmotionCacheProvider(
     return { cache, flush };
   });
 
+  // 서버에서 삽입된 HTML을 처리하기 위한 훅 사용
   useServerInsertedHTML(() => {
     const inserted = registry.flush();
     if (inserted.length === 0) {
@@ -92,5 +120,6 @@ export default function NextAppDirEmotionCacheProvider(
     );
   });
 
+  // Emotion 캐시를 자식 컴포넌트에 제공
   return <CacheProvider value={registry.cache}>{children}</CacheProvider>;
 }

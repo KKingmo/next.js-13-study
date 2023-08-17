@@ -1,6 +1,4 @@
 "use client";
-
-import Link from "next/link";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -17,11 +15,10 @@ import HomeIcon from "@mui/icons-material/Home";
 import FolderIcon from "@mui/icons-material/Folder";
 import ArticleIcon from "@mui/icons-material/Article";
 import ThemeRegistry from "@/components/ThemeRegistry/ThemeRegistry";
-import { TransitionProvider } from "@/context/TransitionContext";
-import TransitionComponent from "@/components/Transition";
-import { Fragment, ReactNode, useState } from "react";
+import { Fragment, ReactNode, useEffect, useState } from "react";
 import { Collapse } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import TransitionHandler from "@/components/TransitionHandler";
 
 const DRAWER_WIDTH = 240;
 
@@ -44,6 +41,11 @@ const LINKS = [
 
 export default function Layout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState<any>({});
+  const [url, setUrl] = useState<string>("/");
+
+  const chooseUrl = (path: string) => {
+    setUrl(path);
+  };
 
   const handleClickMenu = (key: string) => {
     setOpen((prev: any) => {
@@ -98,8 +100,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                         {children?.map(
                           ({ text: cText, href: cHref, icon: CIcon }) => (
                             <ListItemButton
-                              component={Link}
-                              href={cHref}
+                              onClick={() => chooseUrl(cHref)}
                               sx={{ pl: 4 }}
                               key={cHref}
                             >
@@ -115,7 +116,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                   </Fragment>
                 ) : (
                   <ListItem key={ukey} disablePadding>
-                    <ListItemButton component={Link} href={href}>
+                    <ListItemButton onClick={() => chooseUrl(href)}>
                       <ListItemIcon>
                         <Icon />
                       </ListItemIcon>
@@ -137,11 +138,9 @@ export default function Layout({ children }: { children: ReactNode }) {
               p: 3,
             }}
           >
-            <TransitionProvider>
-              <div className="content-container">
-                <TransitionComponent>{children}</TransitionComponent>
-              </div>
-            </TransitionProvider>
+            <div className="content-container">
+              <TransitionHandler url={url}>{children}</TransitionHandler>
+            </div>
           </Box>
         </ThemeRegistry>
       </body>
