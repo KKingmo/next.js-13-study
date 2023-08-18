@@ -6,13 +6,7 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
-export default function MediaCard({
-  heading,
-  text,
-}: {
-  heading: string;
-  text: string;
-}) {
+const MediaCard = ({ heading, text }: { heading: string; text: string }) => {
   return (
     <Card>
       <Image
@@ -40,4 +34,6 @@ export default function MediaCard({
       </CardActions>
     </Card>
   );
-}
+};
+
+export default MediaCard;

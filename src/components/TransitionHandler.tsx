@@ -1,10 +1,10 @@
-import { useRef, useEffect, ReactNode, useCallback, memo } from "react";
+import { useRef, useEffect, ReactNode, useContext } from "react";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
+import TransitionContext from "@/context/TransitionContext";
 
 interface TransitionHandlerProps {
   children: ReactNode;
-  url: string;
 }
 
 /**
@@ -18,13 +18,12 @@ interface TransitionHandlerProps {
  * </TransitionHandler>
  *
  * @param {ReactNode} children
- * @param {string} url - 이동할 페이지의 URL.
  */
-
-const TransitionHandler = ({ children, url }: TransitionHandlerProps) => {
+const TransitionHandler = ({ children }: TransitionHandlerProps) => {
   const elementRef = useRef<HTMLDivElement>(null);
   const firstLoad = useRef(true);
   const router = useRouter();
+  const { url } = useContext(TransitionContext);
 
   /**
    * router.push 후 페이지 진입 애니메이션.
@@ -38,7 +37,7 @@ const TransitionHandler = ({ children, url }: TransitionHandlerProps) => {
         .timeline({
           paused: true,
         })
-        .to(element, { autoAlpha: 1, y: 0, ease: "power3.inOut" })
+        .to(element, { autoAlpha: 1, y: 0, ease: "power3.in" })
         .play();
     }
   };
@@ -56,7 +55,7 @@ const TransitionHandler = ({ children, url }: TransitionHandlerProps) => {
           paused: true,
           onComplete: () => onPageEnter(),
         })
-        .to(element, { y: 100, autoAlpha: 0, ease: "power3.inOut" })
+        .to(element, { y: 100, autoAlpha: 0, ease: "power3.Out" })
         .play();
     }
   };
@@ -73,4 +72,4 @@ const TransitionHandler = ({ children, url }: TransitionHandlerProps) => {
   return <main ref={elementRef}>{children}</main>;
 };
 
-export default memo(TransitionHandler);
+export default TransitionHandler;

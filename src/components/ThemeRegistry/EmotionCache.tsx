@@ -1,5 +1,4 @@
 "use client";
-
 import { Fragment, ReactNode, useState } from "react";
 import { useServerInsertedHTML } from "next/navigation";
 import { CacheProvider as DefaultCacheProvider } from "@emotion/react";
@@ -44,10 +43,9 @@ export type NextAppDirEmotionCacheProviderProps = {
  * @param {NextAppDirEmotionCacheProviderProps} props - Emotion 캐시 Provider의 프로퍼티.
  * @returns {JSX.Element} - Emotion 스타일을 처리하는 컴포넌트.
  */
-
-export default function NextAppDirEmotionCacheProvider(
+const NextAppDirEmotionCacheProvider = (
   props: NextAppDirEmotionCacheProviderProps
-) {
+) => {
   const { options, CacheProvider = DefaultCacheProvider, children } = props;
 
   // Emotion 캐시 및 flush 메서드 초기화
@@ -122,4 +120,6 @@ export default function NextAppDirEmotionCacheProvider(
 
   // Emotion 캐시를 자식 컴포넌트에 제공
   return <CacheProvider value={registry.cache}>{children}</CacheProvider>;
-}
+};
+
+export default NextAppDirEmotionCacheProvider;
