@@ -1,4 +1,5 @@
 "use client";
+import { usePathname } from "next/navigation";
 import React, { createContext, useState, ReactNode } from "react";
 
 /**
@@ -35,10 +36,9 @@ interface TransitionProviderProps {
  * 자식 컴포넌트들에게 `url` 상태와 `chooseUrl` 함수를 제공합니다.
  *
  * @param {ReactNode} children - React 컴포넌트의 자식 요소들.
- * @returns {JSX.Element} - Transition 상태를 공급하는 컨텍스트 공급자.
  */
 export const TransitionProvider = ({ children }: TransitionProviderProps) => {
-  const [url, setUrl] = useState<string>("/");
+  const [url, setUrl] = useState<string>(usePathname());
 
   const chooseUrl = (path: string) => {
     setUrl(path);

@@ -61,7 +61,6 @@ const TransitionHandler = ({ children }: TransitionHandlerProps) => {
   };
 
   useEffect(() => {
-    console.log(url, firstLoad.current);
     if (firstLoad.current) {
       firstLoad.current = false;
       return;

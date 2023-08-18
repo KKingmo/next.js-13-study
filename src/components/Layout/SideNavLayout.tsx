@@ -11,15 +11,36 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import { Fragment, ReactNode, useContext, useState } from "react";
+import {
+  ComponentType,
+  Fragment,
+  ReactNode,
+  useContext,
+  useState,
+} from "react";
 import { Collapse } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import TransitionHandler from "@/components/TransitionHandler";
 import TransitionContext from "@/context/TransitionContext";
 import { LINKS } from "@/config/menuConfig";
 
+type MenuLink = {
+  text: string;
+  href: string;
+  icon: ComponentType;
+  children?: MenuLink[];
+};
+
 const DRAWER_WIDTH = 240;
 
+/**
+ * `SideNavLayout` 컴포넌트.
+ *
+ * 상단에 AppBar와 왼쪽에 Drawer 메뉴를 포함하는 레이아웃 컴포넌트입니다.
+ * LINKS 설정을 통해 메뉴 항목을 동적으로 생성합니다.
+ *
+ * @param {ReactNode} children
+ */
 const SideNavLayout = ({ children }: { children: ReactNode }) => {
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const { chooseUrl } = useContext(TransitionContext);
@@ -32,6 +53,7 @@ const SideNavLayout = ({ children }: { children: ReactNode }) => {
 
   return (
     <>
+      {/* 상단 AppBar 설정 */}
       <AppBar position="fixed" sx={{ zIndex: 2000 }}>
         <Toolbar sx={{ backgroundColor: "background.paper" }}>
           <DashboardIcon
@@ -42,6 +64,8 @@ const SideNavLayout = ({ children }: { children: ReactNode }) => {
           </Typography>
         </Toolbar>
       </AppBar>
+
+      {/* 좌측 Drawer 메뉴 설정 */}
       <Drawer
         sx={{
           width: DRAWER_WIDTH,
@@ -59,7 +83,7 @@ const SideNavLayout = ({ children }: { children: ReactNode }) => {
       >
         <Divider />
         <List>
-          {LINKS.map(({ text, href, icon: Icon, children }) => {
+          {LINKS.map(({ text, href, icon: Icon, children }: MenuLink) => {
             const ukey = `${text}${href}`;
             return children ? (
               <Fragment key={ukey}>
@@ -102,6 +126,8 @@ const SideNavLayout = ({ children }: { children: ReactNode }) => {
           })}
         </List>
       </Drawer>
+
+      {/* 주요 콘텐츠 영역 설정 */}
       <Box
         component="main"
         sx={{

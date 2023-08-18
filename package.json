@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev && npx json-server --port 9999 --watch db.json",
     "build": "next build",
-    "start": "next start",
+    "start": "next start && npx json-server --port 9999 --watch db.json",
     "lint": "next lint"
   },
   "dependencies": {
