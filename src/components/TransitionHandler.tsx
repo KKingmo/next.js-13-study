@@ -1,4 +1,4 @@
-import { useRef, useEffect, ReactNode, useContext } from "react";
+import { useRef, useEffect, ReactNode, useContext, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import TransitionContext from "@/context/TransitionContext";
@@ -28,7 +28,7 @@ const TransitionHandler = ({ children }: TransitionHandlerProps) => {
   /**
    * router.push 후 페이지 진입 애니메이션.
    */
-  const onPageEnter = () => {
+  const onPageEnter = useCallback(() => {
     if (elementRef.current) {
       const element = elementRef.current;
       router.push(url);
@@ -40,12 +40,12 @@ const TransitionHandler = ({ children }: TransitionHandlerProps) => {
         .to(element, { autoAlpha: 1, y: 0, ease: "power3.in" })
         .play();
     }
-  };
+  }, [router, url]);
 
   /**
    * 다음 페이지 프리패칭 후 unmount 애니메이션.
    */
-  const onPageExit = () => {
+  const onPageExit = useCallback(() => {
     if (elementRef.current) {
       const element = elementRef.current;
       router.prefetch(url);
@@ -58,7 +58,7 @@ const TransitionHandler = ({ children }: TransitionHandlerProps) => {
         .to(element, { y: 100, autoAlpha: 0, ease: "power3.Out" })
         .play();
     }
-  };
+  }, [onPageEnter, router, url]);
 
   useEffect(() => {
     if (firstLoad.current) {
@@ -66,7 +66,7 @@ const TransitionHandler = ({ children }: TransitionHandlerProps) => {
       return;
     }
     onPageExit();
-  }, [url]);
+  }, [url, onPageExit]);
 
   return <main ref={elementRef}>{children}</main>;
 };

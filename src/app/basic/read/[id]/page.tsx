@@ -1,5 +1,6 @@
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
+import PostControl from "@/components/PostControl";
 
 type ReadProps = {
   params: {
@@ -16,7 +17,9 @@ type ReadProps = {
  */
 export default async function Read(props: ReadProps) {
   const { params } = props;
-  const resp = await fetch(`http://localhost:9999/topics/${params.id}`);
+  const resp = await fetch(`${process.env.API_URL}/topics/${params.id}`, {
+    cache: "no-cache",
+  });
   const topics = await resp.json();
   return (
     <Container>
@@ -26,6 +29,7 @@ export default async function Read(props: ReadProps) {
           flexDirection: "column",
         }}
       >
+        <PostControl />
         <h2>{topics.title}</h2>
         {topics.body}
       </Box>

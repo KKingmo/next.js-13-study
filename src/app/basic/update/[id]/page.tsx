@@ -2,13 +2,25 @@
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import TransitionContext from "@/context/TransitionContext";
-import { FormEvent, useContext } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import { PATH } from "@/config/menuConfig";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
-const Create = () => {
+const Update = () => {
   const router = useRouter();
   const { chooseUrl } = useContext(TransitionContext);
+  const [detail, setDetail] = useState<
+    Record<string | number, string | number>
+  >({});
+  const params = useParams();
+  const id = params.id;
+  useEffect(() => {
+    fetch(`${process.env.API_URL}/topics/${id}`)
+      .then((resp) => resp.json())
+      .then((result) => {
+        setDetail(result);
+      });
+  }, []);
   return (
     <Container>
       <Box
@@ -30,13 +42,13 @@ const Create = () => {
             const title = titleElement.value;
             const body = bodyElement.value;
             const options = {
-              method: "POST",
+              method: "PATCH",
               headers: {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({ title, body }),
             };
-            fetch(`${process.env.API_URL}/topics`, options)
+            fetch(`${process.env.API_URL}/topics/${id}`, options)
               .then((res) => res.json())
               .then((result) => {
                 const lastid = result.id;
@@ -46,17 +58,26 @@ const Create = () => {
           }}
         >
           <p>
-            <input type="text" name="title" placeholder="title" />
+            <input
+              type="text"
+              name="title"
+              placeholder="title"
+              defaultValue={detail.title}
+            />
           </p>
           <p>
-            <textarea name="body" placeholder="body"></textarea>
+            <textarea
+              name="body"
+              placeholder="body"
+              defaultValue={detail.body}
+            ></textarea>
           </p>
           <p>
-            <input type="submit" value="create" />
+            <input type="submit" value="update" />
           </p>
         </form>
       </Box>
     </Container>
   );
 };
-export default Create;
+export default Update;

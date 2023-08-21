@@ -44,7 +44,16 @@ const MediaCard = ({
         <Typography gutterBottom variant="h5" component="div">
           {heading}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{
+            display: "-webkit-box",
+            overflow: "hidden",
+            WebkitBoxOrient: "vertical",
+            WebkitLineClamp: 1,
+          }}
+        >
           {text}
         </Typography>
       </CardContent>
